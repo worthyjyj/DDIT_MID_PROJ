@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE sqlMap
+   PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+   "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+   
+<sqlMap namespace="freeboard-option">
+
+	<!-- 자유게시판 글 등록- 대륙 리스트 가져오기 -->
+ 	<select id="getContiList" resultClass="selectOptionVO">
+ 		select conti_no, conti_name from continent
+ 	</select>
+ 	
+ 	<!-- 자유게시판 글 등록- 국가 리스트 가져오기 -->
+ 	<select id="getCountryList" parameterClass="int" resultClass="selectOptionVO">
+		select A.coun_no, 
+     		   A.coun_name,
+               B.conti_no 
+           from country A, continent B
+          where a.CONTI_NO=b.CONTI_NO
+          and b.CONTI_NO=#cont#
+ 	</select>
+ 
+ 	
+ 	<!-- 자유게시판 글 등록- 도시 리스트 가져오기 -->
+ 	<select id="getRegionList" parameterClass="int" resultClass="selectOptionVO">
+ 		select A.reg_no, 
+               A.reg_name,
+               B.coun_no 
+          from region A, country B
+         where A.coun_no=B.coun_no
+         and B.coun_no=#data#
+ 	</select>
+ 	
+ 	
+</sqlMap>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+	<sqlMap namespace="schedule">
+
+	<select id="getAllData" resultClass="svo">
+		select
+			sch_no as "sch_no",
+			ID as "_id",
+			TITLE as "title",
+			DESCRIPTION as "description",
+			START1 as "start",
+			END1 as "end",
+			TYPE1 as "type",
+			USERNAME as "username",
+			BACKGROUNDCOLOR as "backgroundColor",
+			TEXTCOLOR as "textColor",
+			ALLDAY as "allDay"
+		from schedule
+	</select>
+	
+	<select id="getSelectData" parameterClass="int" resultClass="svo">
+		select
+			sch_no as "sch_no",
+			ID as "_id",
+			TITLE as "title",
+			DESCRIPTION as "description",
+			START1 as "start",
+			END1 as "end",
+			TYPE1 as "type",
+			USERNAME as "username",
+			BACKGROUNDCOLOR as "backgroundColor",
+			TEXTCOLOR as "textColor",
+			ALLDAY as "allDay"
+		from schedule
+		where id = #data#	
+	</select>
+
+	<insert id="insertData" parameterClass="svo">
+		insert into schedule
+		values(
+		schedule_seq.nextval, #title#, #description#, #start#, #end#, #type#, #username#,
+		#backgroundColor#, #textColor#, #allDay#, #_id#
+		)
+	</insert>
+
+	<update id="updateData" parameterClass="svo">
+		update schedule set
+				title = #title#, description = #description#, start1 = #start#, end1 = #end#, 
+				backgroundColor = #backgroundColor#, allDay = #allDay#
+		where sch_no = #sch_no#
+	</update>
+
+	<delete id="deleteData" parameterClass="int">
+		delete from schedule
+		where sch_no = #data#
+	</delete>
+		
+	
+	
+	</sqlMap>

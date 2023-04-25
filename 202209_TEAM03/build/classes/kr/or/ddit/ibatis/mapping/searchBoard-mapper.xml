@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+	<sqlMap namespace="search">
+	
+		<select id="searchMain" parameterClass="string" resultClass="mainBoardVO">
+			select * from main_board
+			where mb_title like #data# or mb_title like #data#		
+		</select>
+		
+		<select id="searchReview" parameterClass="string" resultClass="reviewBoardVO2">
+			select * from review
+			where rev_title like #data# or rev_content like #data#
+		</select>
+		
+		<select id="searchFree" parameterClass="string" resultClass="freeBoardVO">
+			select * from free_board
+			where fb_title like #data# or fb_content like #data#
+		</select>
+		
+	</sqlMap>

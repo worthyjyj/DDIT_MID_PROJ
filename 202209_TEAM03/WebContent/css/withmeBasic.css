@@ -1,0 +1,109 @@
+@charset "UTF-8";
+@font-face {
+   font-family: 'NanumSquareNeo-Variable';
+   src:
+      url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2')
+      format('woff2');
+   font-weight: normal;
+   font-style: normal;
+}
+
+ul, li, h2, h3, button, span, input, label, textarea, div, table, p, .btnWmPage, a{
+   font-family: 'NanumSquareNeo-Variable';
+}
+
+section{
+	min-height: 879.99px;
+	height: auto;
+}
+
+header {
+   border-bottom: 1px solid white;
+   background: #3CB371;
+}
+
+header img {
+   width: 300px;
+   height: 130px;
+   margin-left: 850px;
+}
+
+.memname{
+   color : white;
+   margin-top: 100px;
+   margin-left : 20px;
+}
+
+body{
+   background: #F5F5F5;
+}
+
+.leftdiv {
+   width: 300px; 
+   height:880px; 
+   border:1px solid #DCDCDC; 
+   margin-left: calc(3% - 1%); 
+   background: white;
+   border-radius: 5px;
+}
+
+.profile {
+   margin-top: 20px;
+   margin-left: 8px;
+   width : 260px;
+   height: 150px;
+   border : 1px solid #DCDCDC; 
+   background: #F0FFF0;
+   border-radius: 5px;
+}
+
+.category {
+   width : 260px;
+   height:40px;
+   border: 1px solid #DCDCDC;
+   border-radius: 5px;
+   margin-top: 20px;
+   margin-left : 8px; 
+   padding-top: 5px;
+   padding-left: 10px;
+}
+
+.rightdiv {
+   width : calc(75% - 1%);
+   height : 880px;
+   border : 1px solid #DCDCDC;
+   margin-left : 20px;
+   background: white;
+   border-radius: 5px;
+}
+
+.btnWmPage{
+	border: none;
+	background: none;
+}
+
+#prof_div{
+	text-align: center;
+	border: none;
+	background: none;
+}
+#prof_img{
+	width: 100px;
+	height: 100px;
+	border-radius: 100%;
+	margin: 5px;
+	border: 1px solid #DCDCDC;
+}
+
+a {
+	text-decoration: none;
+	color: black;
+}
+
+a:visited {
+	color: black;
+}
+
+a:hover {
+	color: black;
+}

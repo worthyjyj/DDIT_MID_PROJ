@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+   PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+   "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+   
+   <sqlMap namespace="notice">
+   
+   <select id="getNoticeAll" resultClass="nvo">
+   		select * 
+   		from notice 
+   		order by notice_no desc
+   </select>
+   
+   <insert id="insertNotice" parameterClass="nvo">
+ 		      insert into notice 
+ 		      (NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_PIC, NOTICE_DATE, ADMIN_ID, NOTICE_HIT) 
+    		  values
+    		  (notice_seq.nextval, #notice_title#, #notice_content#, #notice_pic#, sysdate, #admin_id#, 0)
+   </insert>
+   
+   <select id="detailNotice" parameterClass="int" resultClass="nvo">
+   		select * from notice where notice_no = #no#
+   </select>
+   
+   <update id="updateNotice" parameterClass="nvo">
+   	 	update notice set
+   	 		notice_title = #notice_title#, notice_content = #notice_content#, notice_pic = #notice_pic#
+   	 	where notice_no = #notice_no#	
+   </update>
+   
+   <update id="updateHit" parameterClass="int">
+   	update notice set
+   		notice_hit = notice_hit + 1
+   	where notice_no = #data#	
+   </update>
+   
+   <delete id="deleteNotice" parameterClass="int">
+   		delete from notice where notice_no = #data#
+   </delete>
+   
+   </sqlMap>

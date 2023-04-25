@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+<sqlMap namespace="mainboard"> 
+
+ <select id="mainBoardListN" resultClass="mainJoinVO">
+ 	 SELECT A.MB_NO, 
+       A.MB_TITLE, 
+       A.MB_CONTENT, 
+       A.MB_DATE, 
+       TO_CHAR(A.MB_SDATE, 'YYYY-MM-DD') AS MB_SDATE, 
+       TO_CHAR(A.MB_EDATE, 'YYYY-MM-DD') AS MB_EDATE, 
+       A.MB_PIC,
+       CASE WHEN A.MB_STATUS=0 THEN '모집중'
+            WHEN A.MB_STATUS=1 THEN '모집완료'
+            END AS MB_STATUS,
+       A.MB_HIT,
+       A.P_NAME,
+       B.P_PIC,
+       C.REG_NAME,
+       A.REG_NO
+       FROM MAIN_BOARD A, PROFILE B, REGION C 
+       WHERE A.P_NAME = B.P_NAME
+       AND 
+       A.REG_NO = C.REG_NO
+       ORDER BY MB_NO DESC
+ </select>
+ 
+ <select id="getOneMainBoard" parameterClass="int" resultClass="mainJoinVO">
+ 	SELECT A.MB_NO, 
+       A.MB_TITLE, 
+       A.MB_CONTENT, 
+       A.MB_DATE, 
+       TO_CHAR(A.MB_SDATE, 'YYYY-MM-DD') AS MB_SDATE, 
+       TO_CHAR(A.MB_EDATE, 'YYYY-MM-DD') AS MB_EDATE, 
+       A.MB_PIC,
+       CASE WHEN A.MB_STATUS=0 THEN '모집중'
+            WHEN A.MB_STATUS=1 THEN '모집완료'
+            END AS MB_STATUS,
+       A.MB_HIT,
+       A.P_NAME,
+       B.P_PIC,
+       C.REG_NAME,
+       A.REG_NO
+       FROM MAIN_BOARD A, PROFILE B, REGION C 
+       WHERE A.P_NAME = B.P_NAME
+       AND 
+       A.REG_NO = C.REG_NO
+       AND 
+       MB_NO = #mb_no#
+ </select>
+ 
+ <update id="getMbUphit" parameterClass="int">
+ 	UPDATE MAIN_BOARD 
+      SET MB_HIT = MB_HIT+1
+     WHERE MB_NO = #mb_no#
+ </update>
+ 
+ <!-- 세션이 아직 없어서 Null -->
+ <insert id="insertMainReply" parameterClass="HashMap">
+  INSERT into MAIN_COMMENT (MCOM_NO, MCOM_CONTENT, MCOM_DATE, MB_NO, P_NAME) 
+     VALUES (MAIN_COMMENT_SEQ.NEXTVAL,#content#, SYSDATE, $mb_no$, #p_name#)
+ </insert>
+ 
+ <select id="getMBreplyList" parameterClass="int" resultClass="mainReplyVO">
+ select A.MCOM_NO,
+ 		B.P_PIC,
+       A.P_NAME, 
+       A.MCOM_DATE,
+       A.MCOM_CONTENT
+    FROM MAIN_COMMENT A, PROFILE B
+    WHERE A.P_NAME = B.P_NAME
+    AND MB_NO = #mb_no# 
+    ORDER BY 1 DESC
+ </select>
+ 
+ <!-- 이건 안쓸 듯... -->
+<!--  <select id="getCountryName" parameterClass="String" resultClass="countryVO"> -->
+<!--     SELECT COUN_NAME -->
+<!--      from CONTINENT A, COUNTRY B -->
+<!--        WHERE A.CONTI_NO = B.CONTI_NO -->
+<!--        AND  A.CONTI_NO = #conti# -->
+<!--  </select> -->
+ 
+ <select id="getallcontinent" resultClass="mainRegionVO">
+  SELECT * 
+   FROM CONTINENT
+ </select>
+ 
+ 
+ <select id="getallcountry" parameterClass="int" resultClass="mainRegionVO"> 
+ select B.COUN_NO,
+       B.COUN_NAME
+    from CONTINENT A, COUNTRY B
+    where A.CONTI_NO = B.CONTI_NO
+    AND A.CONTI_NO = #conti_no#
+ </select>
+ 
+ <select id="getallregion" parameterClass="int" resultClass="mainRegionVO">
+ select REG_NO,
+       REG_NAME
+    from COUNTRY A, REGION B
+    where A.COUN_NO = B.COUN_NO
+    AND A.COUN_NO = #coun_no#
+ </select>
+ 
+ <insert id="maininsert" parameterClass="vo.MainBoardVO">
+ INSERT INTO MAIN_BOARD(MB_NO, MB_TITLE, MB_CONTENT, MB_DATE, MB_SDATE, MB_EDATE, MB_PIC, MB_STATUS, MB_HIT, P_NAME, REG_NO)
+  VALUES(main_board_seq.nextval, #mb_title#, #mb_content#,SYSDATE,#mb_sdate#,#mb_edate#,#mb_pic#,0,0,#p_name#,#reg_no#)
+ </insert> 
+
+<select id="mainBoardListsort" parameterClass="map" resultClass="mainJoinVO">
+	 SELECT A.MB_NO, 
+       A.MB_TITLE, 
+       A.MB_CONTENT, 
+       A.MB_DATE, 
+       TO_CHAR(A.MB_SDATE, 'YYYY-MM-DD') AS MB_SDATE, 
+       TO_CHAR(A.MB_EDATE, 'YYYY-MM-DD') AS MB_EDATE, 
+       A.MB_PIC,
+       CASE WHEN A.MB_STATUS=0 THEN '모집중'
+            WHEN A.MB_STATUS=1 THEN '모집완료'
+            END AS MB_STATUS,
+       A.MB_HIT,
+       A.P_NAME,
+       B.P_PIC,
+       C.REG_NAME
+	FROM MAIN_BOARD   A, PROFILE B, REGION C 
+   WHERE  A.REG_NO like #reg_no# AND A.MB_SDATE IN (SELECT 
+     MB_SDATE
+     MB_EDATE
+     FROM MAIN_BOARD
+      WHERE MB_EDATE <![CDATA[>=]]> #sdate# 
+      AND MB_SDATE <![CDATA[<=]]> #edate#)
+      AND A.P_NAME = B.P_NAME 
+      AND   A.REG_NO = C.REG_NO
+     ORDER BY MB_HIT DESC 
+      
+</select>
+
+<select id="hitList" resultClass="mainJoinVO">
+	SELECT A.MB_NO, 
+       A.MB_TITLE, 
+       A.MB_CONTENT, 
+       A.MB_DATE, 
+       TO_CHAR(A.MB_SDATE, 'YYYY-MM-DD') AS MB_SDATE, 
+       TO_CHAR(A.MB_EDATE, 'YYYY-MM-DD') AS MB_EDATE, 
+       A.MB_PIC,
+       CASE WHEN A.MB_STATUS=0 THEN '모집중'
+            WHEN A.MB_STATUS=1 THEN '모집완료'
+            END AS MB_STATUS,
+       A.MB_HIT,
+       A.P_NAME,
+       B.P_PIC,
+       C.REG_NAME
+       FROM MAIN_BOARD A, PROFILE B, REGION C 
+       WHERE A.P_NAME = B.P_NAME
+       AND 
+       A.REG_NO = C.REG_NO
+       ORDER BY MB_HIT DESC
+</select>
+
+<select id="getContiCoun" parameterClass="int" resultClass="mainJoinVO">
+	SELECT 
+    CONTI_NAME,
+    COUN_NAME 
+    FROM REGION A, CONTINENT B, COUNTRY C
+    WHERE A.COUN_NO = C.COUN_NO
+    AND C.CONTI_NO = B.CONTI_NO
+    AND A.REG_NO = #reg_no#
+  </select>
+  
+<update id="updateMainBoard" parameterClass="mainJoinVO">
+	 UPDATE MAIN_BOARD SET 
+	 MB_TITLE = #mb_title#, 
+	 MB_CONTENT = #mb_content#,
+	 MB_SDATE = #mb_sdate#, 
+	 MB_EDATE = #mb_edate#, 
+	 MB_PIC = #mb_pic#, 
+	 REG_NO = #reg_no#
+    WHERE MB_NO = #mb_no#
+</update>
+
+<update id="modifyReply" parameterClass="Map">
+  UPDATE MAIN_COMMENT 
+   SET MCOM_CONTENT = #mcom_content#,MCOM_DATE=SYSDATE
+   WHERE MCOM_NO = #mcom_no#
+</update>
+
+<delete id="DeleteReply" parameterClass="int">
+   DELETE FROM MAIN_COMMENT WHERE MCOM_NO = #mcom_no#
+</delete>
+
+
+<insert id="withmeinsert" parameterClass="vo.MainBoardVO">
+	INSERT INTO WITHME(WITHME_CODE,WITHME_NAME,WITHME_SDATE,WITHME_EDATE) 
+  VALUES(MAIN_BOARD_SEQ.NEXTVAL-1,#mb_title#,#mb_sdate#, #mb_edate#)	
+</insert>
+
+<insert id="withmejoininsert" parameterClass="vo.MainBoardVO">
+	INSERT INTO JOIN_WITHME(JOIN_NO,JOIN_GRADE,P_NAME,JOIN_DATE,WITHME_CODE) 
+  VALUES(JOIN_WITHME_SEQ.NEXTVAL,1,#p_name#, SYSDATE,MAIN_BOARD_SEQ.NEXTVAL-2)	
+</insert>
+
+
+<insert id="noteinsert">
+  INSERT INTO NOTE (NOTE_NO, NOTE_SEND, NOTE_CONTENT, NOTE_SDATE, NOTE_STATUS, MEM_ID, NOTE_TITLE)
+   VALUES (NOTE_SEQ.NEXTVAL, 'SYSTEM',#PNAME#, SYSDATE, 0,  
+   (SELECT  A.MEM_ID 
+   FROM MEMBER A, PROFILE B
+   WHERE A.MEM_ID = B.MEM_ID
+   AND B.P_NAME = #p_name#)
+   ,#mb_no#)
+</insert>
+
+
+<insert id="insertpick" parameterClass="Map">
+  INSERT INTO PICK (PICK_NO, P_NAME, MB_NO) VALUES(PICK_SEQ.NEXTVAL,#PNAME#,#mb_no#)
+</insert>
+
+<delete id="cancelpick" parameterClass="Map">
+  DELETE FROM PICK WHERE mb_no = #mb_no#
+</delete>
+
+<delete id="deletemainboard" parameterClass="int">
+ DELETE FROM MAIN_BOARD WHERE mb_no = #mb_no#
+</delete>
+
+<select id="getreplycount" parameterClass="int" resultClass="int">
+	SELECT COUNT(*) FROM MAIN_COMMENT WHERE MB_NO = #mb_no#
+</select>
+
+<select id="withmecheck" parameterClass="Map" resultClass="int">
+	 SELECT COUNT(*) 
+    FROM NOTE 
+      WHERE NOTE_CONTENT = #PNAME# 
+      AND MEM_ID = (SELECT  A.MEM_ID 
+   FROM MEMBER A, PROFILE B
+   WHERE A.MEM_ID = B.MEM_ID
+   AND B.P_NAME = #p_name#) 
+      AND NOTE_TITLE = #mb_no#
+</select>
+
+<select id="pickList" parameterClass="String" resultClass="pickVO">
+	SELECT * FROM PICK WHERE P_NAME = #PNAME#
+</select>
+
+<select id="pickcheck" parameterClass="Map" resultClass="int">
+	SELECT COUNT(*) FROM PICK WHERE P_NAME = #PNAME# 
+	AND MB_NO = #mb_no#
+</select>
+
+
+<update id="changestatus2" parameterClass="int">
+	update main_board set
+ 		MB_STATUS = 1 where MB_NO = #mb_no#
+</update>
+
+<update id="changestatus1" parameterClass="int">
+	update main_board set
+ 		MB_STATUS = 0 where MB_NO = #mb_no#
+</update>
+
+<select id="currentstatus" parameterClass="int" resultClass="vo.MainBoardVO">
+	SELECT MB_STATUS
+  FROM MAIN_BOARD
+    WHERE MB_NO = #mb_no#
+</select>
+
+<select id="mainBoardpickList" parameterClass="String" resultClass="mainJoinVO">
+	SELECT DISTINCT A.MB_NO, 
+       A.MB_TITLE, 
+       A.MB_CONTENT, 
+       A.MB_DATE, 
+       TO_CHAR(A.MB_SDATE, 'YYYY-MM-DD') AS MB_SDATE, 
+       TO_CHAR(A.MB_EDATE, 'YYYY-MM-DD') AS MB_EDATE, 
+       A.MB_PIC,
+       CASE WHEN A.MB_STATUS=0 THEN '모집중'
+            WHEN A.MB_STATUS=1 THEN '모집완료'
+            END AS MB_STATUS,
+       A.MB_HIT,
+       A.P_NAME,
+       B.P_PIC,
+       C.REG_NAME,
+       A.REG_NO
+       FROM MAIN_BOARD A, PROFILE B, REGION C, PICK D
+       WHERE A.REG_NO = C.REG_NO
+       AND A.P_NAME = B.P_NAME
+       AND A.MB_NO IN (SELECT MB_NO FROM PICK WHERE P_NAME= #p_name#)
+       ORDER BY MB_NO DESC
+</select>
+
+</sqlMap>

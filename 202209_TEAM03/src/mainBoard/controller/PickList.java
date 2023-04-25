@@ -1,0 +1,65 @@
+package mainBoard.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.google.gson.Gson;
+
+import mainBoard.service.ImainBoardService;
+import mainBoard.service.MainBoardServiceImpl;
+import vo.MainJoinVO;
+import vo.PickVO;
+
+/**
+ * 찜목록 가져오는 메서드 
+ */
+@WebServlet("/mainboard/pickList.do")
+public class PickList extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		
+		response.setCharacterEncoding("utf-8");
+		
+		//응답데이터가 JSON일때의 ContentType 설정 
+		response.setContentType("application/json; charset=utf-8");
+		
+		ImainBoardService service = MainBoardServiceImpl.getInstance();
+		
+		// JSON라이브러리 객체 생성 
+		Gson gson = new Gson(); 
+		
+		// json으로 변환된 데이터가 저장될 변수 선언
+		String jsonData = null;  
+		
+		HttpSession session = request.getSession();  
+		String PNAME = (String) session.getAttribute("PNAME");
+		
+		// 서비스객체로 DB받아오기 
+		List<PickVO> list = service.pickList(PNAME);
+		
+		jsonData = gson.toJson(list);
+		
+		System.out.println("jsonData ==> " + jsonData);
+		
+		PrintWriter out = response.getWriter();
+		out.write(jsonData); // JSON데이터를 응답으로 보내준다. 
+		response.flushBuffer();
+		
+
+//		select * where pname"
+	}
+
+}

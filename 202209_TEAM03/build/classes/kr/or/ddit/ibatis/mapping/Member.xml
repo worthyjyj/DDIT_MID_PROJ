@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+<sqlMap namespace="member"> 
+
+
+ <select id="getId" parameterClass="string" resultClass="string">
+ 	select mem_name
+ 	from member
+ 	where mem_id=#mem_id#
+ </select>
+ 
+ <select id="Join" parameterClass="map" resultClass="int">
+ 	select count(*)
+ 	from member
+ 	where mem_id=#id# 
+ 	and 
+ 	mem_pass=#pw#
+ </select>
+ 
+ <select id="getName" parameterClass="string" resultClass="string">
+ 	select mem_name
+ 	from member
+ 	where mem_id=#mem_id#
+ </select>
+ 
+ <select id="searchId" resultClass="string" parameterClass="map">
+ 	select mem_id
+ 	from member
+ 	where mem_name=#mem_name#
+ 	and
+ 	mem_tel=#mem_tel#
+ </select>
+ 
+ <select id="duplication" parameterClass="string" resultClass="int">
+	 select count(*)
+	 from member
+	 where mem_id=#mem_id#
+ </select>
+ 
+ <insert id="SignUp" parameterClass="memberVO">
+ insert into member 
+ (mem_id, mem_pass, mem_name, mem_reg, mem_mail, mem_tel, mem_status, mem_grade)
+ values
+ (#mem_id#, #mem_pass#, #mem_name#, #mem_reg#, #mem_mail#, #mem_tel#, 0, 0)
+ </insert>
+ 
+ 
+ 	
+<select id="picduple" parameterClass="string" resultClass="int">
+	select count(*)
+ 	from profile
+ 	where p_name=#p_name#
+</select>
+
+<select id="searchReg" parameterClass="string" resultClass="int">
+	select mem_reg
+	from member
+	where mem_id=#mem_id#
+</select>
+
+<insert id="proInsert" parameterClass="profile">
+	insert into profile
+	(p_name, p_gen, p_age, p_pic, p_info , mem_id)
+	values
+	(#p_name#, #p_gen#, #p_age#, #p_pic#, #p_info# , #mem_id#)
+</insert>
+ 
+ 
+ <select id="searchIntro" parameterClass="string" resultClass="string">
+ select p_info
+ from profile
+ where mem_id=#id#
+ </select>
+ 
+ <update id="updateMember" parameterClass="map">
+ 	update member set
+ 		mem_pass=#rePw# where mem_id=#id#
+ </update>
+ 
+ <update id="updateIntro" parameterClass="map">
+ 	update profile set
+ 		p_info=#intro# where mem_id=#id#
+ </update>
+ 
+
+ 
+ <delete id="deleteMember" parameterClass="string">
+ delete from member where mem_id=#mem_id#
+ 
+ </delete>
+ 
+ <delete id="deleteProfile" parameterClass="string">
+ delete from profile where mem_id=#mem_id#
+ </delete>
+ 
+ <select id="getProfile" parameterClass="string" resultClass="profile">
+ 	select * from profile where mem_id = #mem_id#
+ </select>
+ 
+ 
+ <select id="searchMem_id" parameterClass="string" resultClass="string">
+ 	select mem_id
+ 	from profile
+ 	where p_name=#p_name#
+ </select>
+ 
+ <select id="getReviewReply" parameterClass="string" resultClass="reviewReplyVO">
+ select *
+ from review_comment
+ where p_name=#p_name#
+ order by rev_no desc
+ </select>
+ 
+  <select id="getFreeReply"  parameterClass="string" resultClass="FreeReplyVO">
+ select *
+ from free_comment
+ where p_name=#p_name#
+  order by fb_no desc
+ </select>
+ 
+  <select id="getMainReply"  parameterClass="string" resultClass="mainReplyVO">
+ select *
+ from main_comment
+ where p_name=#p_name#
+ order by mb_no desc
+ </select>
+ 
+ <delete id="deleteReply" parameterClass="map">
+ delete 
+ from #table# 
+ where #no#=#num#
+ </delete>
+
+<delete id="deleteReplyReview" parameterClass="int">
+delete
+from review_comment
+where rcom_no=#rcom_no#
+</delete>
+
+<delete id="deleteReplyMain" parameterClass="int">
+delete
+from main_comment
+where mcom_no=#mcom_no#
+</delete>
+
+<delete id="deleteReplyFree" parameterClass="int">
+delete
+from free_comment
+where fcom_no=#fcom_no#
+</delete>
+
+<select id="getReviewBoard" parameterClass="string" resultClass="reviewBoardVO2">
+select *
+from review
+where p_name=#p_name#
+order by rev_no desc 
+</select>
+
+<select id="getMainBoard" parameterClass="string" resultClass="mainBoardVO">
+select *
+from main_board
+where p_name=#p_name#
+order by mb_no desc 
+</select>
+
+<select id="getFreeBoard" parameterClass="string" resultClass="freeBoardVO">
+select *
+from free_board
+where p_name=#p_name#
+order by fb_no desc 
+</select>
+
+<select id="getMemberGrade" parameterClass="string" resultClass="int">
+select mem_grade
+from member
+where mem_id=#mem_id#
+</select>
+
+
+<select id="searchPw" parameterClass="map" resultClass="string">
+select mem_pass
+from member
+where mem_id=#id#
+and
+mem_mail=#email#
+</select>
+</sqlMap>

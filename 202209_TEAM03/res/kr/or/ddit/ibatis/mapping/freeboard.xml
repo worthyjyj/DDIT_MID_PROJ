@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE sqlMap
+   PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+   "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="freeboard">
+	
+	<!-- 전체 게시글 출력하기 -->
+	<select id="getAllFreeBoard" resultClass="freeBoardVO">
+	  select 
+		   a.fb_no, a.fb_title, a.fb_content, a.fb_date, a.fb_hit, nvl(a.fb_reg,' ') as fb_reg, a.p_name, a.fb_pic, b.p_pic
+		 from free_board a,  profile b 
+		where a.p_name = b.p_name
+		order by fb_date desc
+		 
+	</select>
+	
+	<!-- 조회수 순으로 전체 게시글 출력하기 -->
+	<select id="OrderByHit" resultClass="freeBoardVO">
+		select * from free_board order by fb_hit desc
+	</select>
+	
+	<!-- 제목과 내용으로 통합검색 -->
+	<select id="selectByTotal" parameterClass="Map" resultClass="freeBoardVO">
+		select * from free_board 
+		  where fb_title like '%'||#sword#||'%' or
+		        fb_content like '%'||#sword#||'%' 
+	</select>
+	
+<!-- 	<sql id="dynamicCondition">
+	   <dynamic prepend="where">
+	       <isNotEmpty property="stype"  prepend=" and ">
+	          <isNotEmpty property="sword">
+	                  $stype$  like '%'||#sword#||'%'
+	          </isNotEmpty>
+	       </isNotEmpty>
+	   </dynamic>
+ 	</sql>
+ 
+	
+	제목 또는 지역으로 검색해서 리스트 출력하기
+ 	<select id="selectByPage" resultClass="freeBoardVO" parameterClass="map">
+		
+		select A.* from 
+    	 (select fb_no as bonum , B.* from
+           ( select * from free_board
+                  <include refid="dynamicCondition"/>     
+                 order by  fb_no desc ) B 
+          <![CDATA[
+              where fb_no <= #end#) A
+       where A.bonum >= #start#
+		   ]]>    
+	
+	</select> 
+	
+	제목 또는 지역으로 검색해서 리스트 갯수 구하기	
+	 <select id="getTotalCount" parameterClass="map" resultClass="int">
+ 			select count(*) from free_board <include refid="dynamicCondition"/>
+			select count(*) from free_board where fb_title like '%제목%';	
+ 	 </select> -->
+ 	 
+ 	 <!-- 게시글 상세조회 => 번호로 -->
+	<select id="getArticle" parameterClass="int" resultClass="freeBoardVO">
+		select * from free_board where fb_no=#data#
+	</select>
+	
+	 <!-- 조회수 증가 -->
+ 	<update id="updateHit" parameterClass="int">
+ 	update free_board set
+ 		fb_hit = fb_hit + 1
+ 	  where fb_no = #data#  <!-- 파라미터가 한개일경우에는 data 사용가능 -->
+ 	</update>
+ 	
+ 	 <!--  게시글 삭제하기 -->
+ 	 <delete id="deleteBoard" parameterClass="int">
+ 	 	delete from free_board where fb_no = #data#
+ 	 </delete>
+ 	
+ 	
+ 	<!-- 게시글 등록하기 -->	
+ 	<insert id="insertBoard" parameterClass="freeBoardVO" >
+ 		insert into free_board (fb_no, fb_title, fb_content, fb_date, fb_hit, fb_reg, p_name, fb_pic)
+ 		values(FREE_BOARD_SEQ.nextval, #fb_title#, #fb_content#, sysdate, 0, #fb_reg#, #p_name#, #fb_pic#)
+ 	</insert>
+ 	 
+
+ 	 <!-- 댓글 답변상태가져오기  지움 -->   
+	<!-- <select id="replyStatus" parameterClass="int" resultClass="freeBoardVO">
+	     select fb_stat
+	     us from free_board where fb_no=#data#   
+	</select> -->
+
+ 	 <!-- 게시글 수정하기 -->
+ 	 <update id="updateBoard" parameterClass="freeBoardVO">
+ 	 	update free_board set
+ 	 		fb_title=#fb_title#, fb_content=#fb_content#, fb_reg=#fb_reg#, fb_pic=#fb_pic#
+ 	 	where fb_no=#fb_no#
+ 	 </update>
+ 	 
+ 	 <!-- 댓글 수 가져오기 -->
+ 	<select id="getReplyCount" parameterClass="int" resultClass="int" >
+ 		select count(*) from free_comment where fb_no = #data#
+ 	</select>
+ 	
+ 	<!-- 작성자 프로필 정보 및 사진가져오기 -->
+	<select id="getWProfileImg" resultClass="freeBoardVO" parameterClass="string">
+		select p_pic
+			from profile
+		where p_name = #data#
+	</select>
+
+</sqlMap>

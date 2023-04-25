@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+<sqlMap namespace="note"> 
+
+
+<insert id="insertNote" parameterClass="noteVO">
+	insert into note (note_no, note_send, note_title, note_content, note_sdate, note_edate, note_status, mem_id)
+	values
+	(note_seq.nextval, #note_send#, #note_title#, #note_content#, sysdate, sysdate, #note_status#, #mem_id#)
+</insert>
+
+<select id="getNoteList" resultClass="noteVO" parameterClass="string">
+	select * 
+	from note 
+	where mem_id=#mem_id# 
+	order by note_no desc
+</select>
+
+
+<select id="sendNote" parameterClass="string" resultClass="noteVO">
+	select *
+	from note
+	where note_send=#note_send#
+	order by note_no desc
+</select>
+
+
+<select id="reciveNote" parameterClass="string" resultClass="noteVO">
+	select *
+	from note
+	where mem_id=#mem_id#
+	order by note_no desc
+</select>
+
+<select id="detailReceiveNote" parameterClass="int" resultClass="noteVO">
+select *
+from note
+where note_no=#note_no#
+</select>
+
+
+<select id="receiveDetail" parameterClass="map" resultClass="noteVO">
+select *
+from note
+where note_no=#no#
+and 
+mem_id=#id#
+</select>
+
+
+
+<select id="sendDetail" parameterClass="map" resultClass="noteVO">
+select *
+from note
+where note_no=#no#
+and 
+note_send=#id#
+</select>
+
+<update id="updateColor" parameterClass="int">
+update note set
+note_status=1
+where note_no=#note_no#
+</update>
+ 
+ 
+ <delete id="deleteNote" parameterClass="int">
+ delete from note where note_no=#note_no#
+ </delete>
+ 
+ <select id="getNoteState" parameterClass="string" resultClass="int">
+ select count(*)
+ from note
+ where mem_id=#mem_id#
+ and note_status=0
+ </select>
+ 
+ <select id="getTotalCount"  resultClass="int">
+ 	select count(*) from note 
+ </select>
+ 
+ <select id="selectByPage" parameterClass="map" resultClass="noteVO">
+
+		select A.* 
+		 from (select rownum as rnum , B.*
+             from
+        	(select * 
+	           from note
+	           order by  note_no desc) B) A
+		       <![CDATA[where rownum <= #end#
+		       and A.rnum >= #start#]]>
+ </select>
+ 
+ <insert id="withmejoininsert" parameterClass="map">
+ 	insert into join_withme (join_no, join_grade, p_name, join_date, withme_code)
+ 	  values (join_withme_seq.nextval, 0, #p_name#, sysdate, #withme_code#)
+ </insert>
+ 
+</sqlMap>

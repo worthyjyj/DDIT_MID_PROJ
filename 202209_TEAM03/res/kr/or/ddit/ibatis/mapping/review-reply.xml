@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+<sqlMap namespace="reviewReply">
+
+	<!-- 후기 댓글 등록 -->
+	<insert id="insertReviewReply" parameterClass="ReviewReplyVO">
+		insert into review_comment
+		(rcom_no, rcom_content, rcom_date, rev_no, p_name)
+		values
+		(review_comment_seq.nextval, #rcom_content#, sysdate, #rev_no#, #p_name#)
+	</insert>
+	
+	<!-- 댓글수정 -->
+	<update id="updateReply" parameterClass="ReviewReplyVO">
+		update review_comment 
+		   set rcom_content = #rcom_content#
+		 where rcom_no = #rcom_no# 
+	</update>
+	
+	<!-- 댓글삭제 -->
+	<delete id="deleteReply" parameterClass="int">
+		 delete from review_comment where rcom_no=#rcom_no#
+	</delete>
+	
+	<!-- 댓글 갯수 구하기 -->
+	<select id="getReplyCount" parameterClass="int" resultClass="int">
+		select count(*) from review_comment where rev_no = #rev_no#
+	</select>
+	
+	<!-- 댓글 리스트 -->
+	<select id="replyList" parameterClass="int" resultClass="ReviewReplyVO">
+		select * from review_comment where rev_no = #rev_no# order by rcom_date desc
+	</select>
+
+</sqlMap>

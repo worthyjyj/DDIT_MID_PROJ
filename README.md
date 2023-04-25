@@ -2,7 +2,7 @@
 DDIT_중급프로젝트_동행(WITH ME) :bulb:
 ---
 <img src="https://user-images.githubusercontent.com/108921165/233937218-6f2a9af4-cd6d-4437-9104-bd5b1b0f3920.png" width="40" height="40"/> <b>About Project_</b> 
-여행 동행을 구해 withMe에서 일정 관리 등 그룹 관리 서비스를 이용하고 후기 및 자유게시판등 커뮤니티 기반의 웹서비스
+<h4>여행 동행을 구해 withMe에서 일정 관리 등 그룹 관리 서비스를 이용하고 후기 및 자유게시판등 커뮤니티 기반의 웹서비스</h4>
 
 <img src="https://user-images.githubusercontent.com/108921165/233938691-7962bf83-929e-4db7-9fd9-6754acded3de.png" width="40" height="40"/> <b>Proj Period_</b> 
 2022-11-28 ~ 2022-12-21 :  총 23일
